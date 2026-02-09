@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Be My Valentine 💘</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+      background-size: 400% 400%;
+      animation: bgMove 12s ease infinite;
+      font-family: "Poppins", sans-serif;
+      overflow: hidden;
+    }
+    @keyframes bgMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+    .card {
+      width: min(92%, 440px);
+      padding: 40px 30px 45px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.4);
+      position: relative;
+      animation: cardIn 1.1s ease;
+      isolation: isolate;
+    }
+    @keyframes cardIn { from { opacity:0; transform: translateY(30px) scale(0.95);} to{opacity:1; transform: translateY(0) scale(1);} }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 30px;
+      background: linear-gradient(120deg, #ff4d6d, #ff9a9e, #fbc2eb);
+      z-index: -1;
+      filter: blur(20px);
+      opacity: 0.7;
+    }
+    .card.fadeOut { opacity: 0; transform: translateY(10px) scale(0.98); transition: all 700ms ease; }
+    .card.fadeIn  { opacity: 1; transform: translateY(0) scale(1); transition: all 700ms ease; }
+    .emoji {
+      font-size: 68px;
+      margin-bottom: 12px;
+      animation: heartbeat 1.8s infinite;
+    }
+    @keyframes heartbeat { 0%,100%{transform:scale(1)} 25%{transform:scale(1.08)} 75%{transform:scale(1.12)} }
+
+    h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 28px;
+      color: #4a1c2f;
+      margin-bottom: 18px;
+      line-height: 1.35;
+    }
+    .sysBox.soft {
+    background: rgba(255,255,255,0.86);
+    color: #3a1630;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.55);
+    }
+
+    .subline {
+      margin-top: 2px;
+      font-size: 13px;
+      color: #6b6b6b;
+      font-style: italic;
+      min-height: 18px;
+    }
+    .sysBox.soft {
+    background: rgba(255,255,255,0.82);
+    color: #3a1630;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    }
+    .btnRow {
+      margin-top: 22px;
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      align-items: center;
+      min-height: 62px;
+    }
+
+    button {
+      padding: 14px 36px;
+      border-radius: 40px;
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transform-origin: center;
+    }
+    button:active { transform: scale(0.94); }
+
+    #yes {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      color: #fff;
+      box-shadow: 0 15px 35px rgba(255,77,109,0.55);
+    }
+    #yes:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(255,77,109,0.7); }
+
+    #no {
+      background: rgba(255,255,255,0.92);
+      color: #777;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      animation: floatUp linear forwards;
+      pointer-events: none;
+      filter: blur(0.3px);
+      z-index: 0;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to   { transform: translateY(-120vh) scale(1.8); opacity: 0; }
+    }
+    /* Ultimate YES celebration overlay */
+    .celebrate {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 10001;
+    pointer-events: none;
+    overflow: hidden;
+    }
+
+    .celebrate.show { display: block; }
+
+    .celebrate .sun {
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff7c7, #ffd36a 55%, rgba(255,160,0,0.2) 72%);
+    box-shadow: 0 0 120px rgba(255, 210, 90, 0.75);
+    animation: sunPulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes sunPulse {
+    0%,100% { transform: scale(1); opacity: 0.95; }
+    50% { transform: scale(1.06); opacity: 1; }
+    }
+
+    .celebrate .rainbow {
+    position: absolute;
+    left: 50%;
+    bottom: -35%;
+    width: 120vw;
+    height: 120vw;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: conic-gradient(
+        #ff4d6d,
+        #ff9f1c,
+        #ffe66d,
+        #2ec4b6,
+        #3a86ff,
+        #8338ec,
+        #ff4d6d
+    );
+    opacity: 0.20;
+    filter: blur(0.4px);
+    animation: rainbowSpin 10s linear infinite;
+    }
+
+    @keyframes rainbowSpin {
+    to { transform: translateX(-50%) rotate(360deg); }
+    }
+
+    .celebrate .flowers {
+    position: absolute;
+    inset: 0;
+    opacity: 0.85;
+    font-size: 30px;
+    }
+
+    .flower {
+    position: absolute;
+    animation: flowerFloat 4.2s ease-in-out infinite;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.25));
+    }
+
+    @keyframes flowerFloat {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(8deg); }
+    }
+
+    /* Bright happy background when YES wins */
+    body.yesUltimate {
+    animation: none;
+    background: radial-gradient(circle at 30% 20%, #fff4b8, #ffd7ea 35%, #bde0fe 80%);
+    }
+
+    /* Overlay for loaders / glitches */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .overlay.show { display: flex; }
+
+    .sysBox {
+      background: rgba(0,0,0,0.78);
+      color: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding: 22px 22px;
+      border-radius: 14px;
+      width: min(88vw, 420px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      text-align: left;
+    }
+    .barWrap { margin-top: 14px; width: 100%; height: 10px; background: #2a2a2a; border-radius: 999px; overflow: hidden; }
+    .bar { width: 0%; height: 100%; background: #ff4d6d; }
+
+    /* Poof + explosion */
+    .poof {
+    position: fixed;              /* important: we will place it using viewport coords */
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    font-size: 64px;              /* base size */
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9997;
+    will-change: transform, opacity, filter;
+    }
+
+    .poof.run {
+    animation: poof 1200ms ease-out forwards;   /* slower */
+    }
+
+    @keyframes poof {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.55); filter: blur(0px); }
+    10%  { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
+    55%  { opacity: 1; transform: translate(-50%, -50%) scale(1.9); }  /* grows more */
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.7); filter: blur(3px); }
+    }
+    .barV.open {
+    animation: doorOpen 700ms ease forwards;
+    }
+
+    @keyframes doorOpen {
+    to { transform: translateY(140vh); opacity: 0.1; }
+    }
+
+    /* Glitch effect on card text */
+    .glitch {
+      animation: glitch 700ms linear infinite;
+    }
+    @keyframes glitch {
+      0% { transform: translate(0,0); filter: hue-rotate(0deg) contrast(1); }
+      15% { transform: translate(-2px,1px); filter: hue-rotate(20deg) contrast(1.1); }
+      30% { transform: translate(2px,-1px); filter: hue-rotate(70deg) contrast(1.2); }
+      45% { transform: translate(-3px,-1px); filter: hue-rotate(140deg) contrast(1.1); }
+      60% { transform: translate(3px,2px); filter: hue-rotate(200deg) contrast(1.2); }
+      75% { transform: translate(-1px,2px); filter: hue-rotate(280deg) contrast(1.05); }
+      100% { transform: translate(0,0); filter: hue-rotate(360deg) contrast(1); }
+    }
+
+    /* Red romantic mode */
+    body.redMode {
+      animation: none;
+      background: radial-gradient(circle at 20% 20%, #ff3b4f, #7a0010 65%, #200006);
+    }
+    .candles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      display: none;
+    }
+    body.redMode .candles { display: block; }
+    .candle {
+      position: absolute;
+      bottom: 0;
+      width: 18px;
+      height: 130px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 10px 10px 6px 6px;
+      box-shadow: 0 0 18px rgba(255,200,140,0.55);
+    }
+    .flame {
+      position: absolute;
+      left: 50%;
+      top: -22px;
+      width: 18px;
+      height: 22px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at 50% 30%, #fff7c7, #ffb347 45%, rgba(255,90,0,0.2) 70%);
+      border-radius: 50% 50% 50% 50%;
+      filter: blur(0.2px);
+      animation: flicker 1s ease-in-out infinite;
+    }
+    @keyframes flicker {
+      0%,100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
+      50% { transform: translateX(-50%) scale(0.92) rotate(-2deg); opacity: 0.85; }
+    }
+    /* Fullscreen burst particles */
+    .fx {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9997;
+    }
+
+    .fxParticle {
+    position: fixed;
+    left: 0; top: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    font-size: 40px;
+    filter: blur(0px);
+    will-change: transform, opacity, filter;
+    }
+
+    .fxParticle.boom { animation: boom 1600ms ease-out forwards; }
+    .fxParticle.spark { animation: spark 1400ms ease-out forwards; }
+    .fxParticle.smoke { animation: smoke 2200ms ease-out forwards; }
+
+    @keyframes boom {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.4); }
+    12%  { opacity: 1; transform: translate(-50%,-50%) scale(1.0); }
+    55%  { opacity: 1; transform: translate(-50%,-50%) scale(2.2); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(3.1); filter: blur(2.5px); }
+    }
+
+    @keyframes spark {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.6) rotate(0deg); }
+    10%  { opacity: 1; transform: translate(-50%,-50%) scale(1.0) rotate(8deg); }
+    70%  { opacity: 0.9; transform: translate(-50%,-50%) scale(1.6) rotate(30deg); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(2.1) rotate(55deg); filter: blur(1.2px); }
+    }
+
+    @keyframes smoke {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.7); filter: blur(0px); }
+    20%  { opacity: 0.65; transform: translate(-50%,-50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(2.6) translateY(-60px); filter: blur(4px); }
+    }
+
+    /* Big cracking heart */
+    .bigHeart {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 420px;
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      text-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    .bigHeart.show { opacity: 1; }
+    .bigHeart.crack { animation: crack 900ms ease forwards; }
+    @keyframes crack {
+      0% { transform: translate(-50%,-50%) scale(1); }
+      40% { transform: translate(-50%,-50%) scale(1.08) rotate(-2deg); }
+      100% { transform: translate(-50%,-50%) scale(1) rotate(1deg); filter: grayscale(0.2) contrast(1.2); }
+    }
+
+    /* Jail bars */
+    .bars {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+      pointer-events: none;
+      background: rgba(0,0,0,0.2);
+    }
+    .bars.show { display: block; }
+    .barV {
+      position: absolute;
+      top: -120%;
+      width: 36px;
+      height: 240%;
+      background: linear-gradient(90deg, #444, #999, #3a3a3a);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.55);
+      border-radius: 10px;
+      animation: barsDrop 650ms ease forwards;
+    }
+    @keyframes barsDrop { to { top: -20%; } }
+
+    /* Word-by-word highlight */
+    .sentence {
+      position: fixed;
+      left: 50%;
+      top: 12%;
+      transform: translateX(-50%);
+      font-family: "Playfair Display", serif;
+      font-size: 34px;
+      color: rgba(255,255,255,0.35);
+      z-index: 10000;
+      display: none;
+      letter-spacing: 0.5px;
+      text-align: center;
+      pointer-events: none;
+    }
+    .sentence.show { display: block; }
+    .sentence span.on { color: #fff; text-shadow: 0 8px 30px rgba(0,0,0,0.55); }
+
+    /* YES wall behind bars */
+    .yesWall {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9998;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,77,109,0.22),
+          rgba(255,77,109,0.22) 14px,
+          rgba(255,255,255,0.05) 14px,
+          rgba(255,255,255,0.05) 28px
+        );
+      opacity: 0;
+      animation: wallIn 600ms ease forwards;
+    }
+    @keyframes wallIn { to { opacity: 1; } }
+    .yesWall.show { display: block; }
+    .yesSpam {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 64px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.18);
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      transform: rotate(-8deg);
+    }
+
+    @media (max-width: 480px) {
+      h2 { font-size: 23px; }
+      .emoji { font-size: 58px; }
+      button { padding: 12px 28px; font-size: 15px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card" id="card">
+    <div class="emoji" id="emoji">🐱❤️</div>
+    <h2 id="question">Hey Anuschka,<br>will you be my Valentine?</h2>
+    <div class="subline" id="subline"></div>
+
+    <div class="btnRow">
+      <button id="yes">Yes 💖</button>
+      <button id="no">No 🙈</button>
+    </div>
+
+    <div class="hint" id="hint">Some love stories don’t allow “no” ✨</div>
+
+    <div class="poof" id="poof">💥</div>
+  </div>
+  
+  <div class="overlay" id="overlay">
+    <div class="sysBox" id="sysBox">
+      <div id="sysText">Processing rejection...</div>
+      <div class="barWrap"><div class="bar" id="bar"></div></div>
+    </div>
+  </div>
+
+  <div class="candles" id="candles"></div>
+  <div class="bigHeart" id="bigHeart">❤️</div>
+
+  <div class="yesWall" id="yesWall">
+    <div class="yesSpam" id="yesSpam">YES YES YES YES YES</div>
+  </div>
+
+  <div class="bars" id="bars"></div>
+  <div class="sentence" id="sentence">
+    <span id="w1">now</span> <span id="w2">you</span> <span id="w3">have</span> <span id="w4">no</span> <span id="w5">choice</span>
+  </div>
+
+  <!-- Sounds -->
+  <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-voice-laugh-343.mp3"></audio>
+  <audio id="yesSound" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+
+  <script>
+    const card = document.getElementById("card");
+    const emoji = document.getElementById("emoji");
+    const question = document.getElementById("question");
+    const hint = document.getElementById("hint");
+    const subline = document.getElementById("subline");
+
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+
+    const overlay = document.getElementById("overlay");
+    const sysText = document.getElementById("sysText");
+    const bar = document.getElementById("bar");
+
+    const poof = document.getElementById("poof");
+    const candles = document.getElementById("candles");
+    const bigHeart = document.getElementById("bigHeart");
+
+    const bars = document.getElementById("bars");
+    const sentence = document.getElementById("sentence");
+    const yesWall = document.getElementById("yesWall");
+
+    const w = [
+      document.getElementById("w1"),
+      document.getElementById("w2"),
+      document.getElementById("w3"),
+      document.getElementById("w4"),
+      document.getElementById("w5"),
+    ];
+    
+    const hoverSound = document.getElementById("hoverSound");
+    const yesSound = document.getElementById("yesSound");
+
+    // ===== State =====
+    let stage = 0;         // 0: fresh, 1: after wrong answer, 2: after error777, 3: scaling+messages, 4: poof+glitch, 5: rebooted, 6: red romantic, 7: please spam, 8: heart crack, 9: jail, 10: yes-wall
+    let scaleNoClicks = 0; // within scaling phase
+
+    // ===== Audio unlock =====
+    let audioUnlocked = false;
+    function unlockAudioOnce() {
+      if (audioUnlocked) return;
+      audioUnlocked = true;
+      [hoverSound, yesSound].forEach(a => {
+        try { a.volume = 0.9; a.play().then(() => a.pause()).catch(() => {}); } catch(e) {}
+        try { a.currentTime = 0; } catch(e) {}
+      });
+    }
+    window.addEventListener("pointerdown", unlockAudioOnce, { once: true });
+    window.addEventListener("touchstart", unlockAudioOnce, { once: true, passive: true });
+    let locked = false;
+    function withLock(fn, ms = 700) {
+    if (locked) return;
+    locked = true;
+    try { fn(); } finally { setTimeout(() => locked = false, ms); }
+    }
+    function yesPopup(messageHtml, ms = 2200) {
+    // make sysBox soft + cute
+    const box = document.getElementById("sysBox");
+    box.classList.add("soft");
+    showOverlay("", false);
+    sysText.innerHTML = messageHtml;
+
+    setTimeout(() => {
+        hideOverlay();
+        box.classList.remove("soft");
+    }, ms);
+    }
+
+    function playYes() {
+      try { yesSound.currentTime = 0; yesSound.play().catch(() => {}); } catch(e) {}
+    }
+    function playHover() {
+      try { hoverSound.currentTime = 0; hoverSound.play().catch(() => {}); } catch(e) {}
+    }
+
+    function setScales(noScale, yesScale) {
+      noBtn.style.transform = `scale(${noScale})`;
+      yesBtn.style.transform = `scale(${yesScale})`;
+    }
+
+    function showOverlay(text, withBar = true) {
+      sysText.textContent = text;
+      bar.style.width = "0%";
+      overlay.classList.add("show");
+      document.getElementById("bar").parentElement.style.display = withBar ? "block" : "none";
+    }
+    function hideOverlay() {
+      overlay.classList.remove("show");
+      document.getElementById("bar").parentElement.style.display = "block";
+    }
+
+    function loaderThenError777() {
+      showOverlay("Processing rejection...", true);
+      let p = 0;
+      const t = setInterval(() => {
+        p += 7;
+        bar.style.width = p + "%";
+        if (p >= 100) {
+          clearInterval(t);
+          setTimeout(() => {
+            sysText.innerHTML = `ERROR 777:<br><span style="color:#ff7ea0;">I reject your rejection.</span>`;
+            setTimeout(() => {
+              hideOverlay();
+              stage = 2;
+              subline.textContent = "";
+            }, 1400);
+          }, 250);
+        }
+      }, 110);
+    }
+    function systemPopup(message, ms = 1400) {
+    const box = document.getElementById("sysBox");
+    box.classList.add("soft");
+    showOverlay("", false);
+    sysText.innerHTML = message;
+    setTimeout(() => {
+        hideOverlay();
+        box.classList.remove("soft");
+    }, ms);
+    }
+
+    function startScalingPhase() {
+      stage = 3;
+      scaleNoClicks = 0;
+      subline.textContent = "Okay… last chance 😌";
+      setScales(1, 1);
+    }
+
+    function scalingMessage(n) {
+      if (n === 1) subline.textContent = "Are you sure? 🤨";
+      if (n === 2) subline.textContent = "Choose wisely…";
+      if (n === 3) subline.textContent = "This decision affects the Universe.";
+    }
+    function buildFlowers() {
+    const wrap = document.getElementById("flowers");
+    wrap.innerHTML = "";
+
+    const icons = ["🌸","🌼","🌺","🌻","🌷","✨"];
+    const count = 18;
+
+    for (let i = 0; i < count; i++) {
+        const f = document.createElement("div");
+        f.className = "flower";
+        f.textContent = icons[Math.floor(Math.random() * icons.length)];
+
+        f.style.left = (Math.random() * 92 + 4) + "%";
+        f.style.top  = (Math.random() * 70 + 10) + "%";
+        f.style.fontSize = (22 + Math.random() * 26) + "px";
+        f.style.animationDelay = (Math.random() * 1.4) + "s";
+
+        wrap.appendChild(f);
+    }
+    }
+
+    function fireworksConfetti(durationMs = 4000) {
+    if (typeof confetti !== "function") return;
+
+    const end = Date.now() + durationMs;
+    (function frame() {
+        confetti({
+        particleCount: 10,
+        spread: 80,
+        startVelocity: 45,
+        origin: { x: Math.random(), y: Math.random() * 0.4 + 0.1 }
+        });
+
+        if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+
+    // extra big bursts
+    setTimeout(() => confetti({ particleCount: 160, spread: 120, origin: { y: 0.65 } }), 250);
+    setTimeout(() => confetti({ particleCount: 200, spread: 140, origin: { y: 0.55 } }), 900);
+    setTimeout(() => confetti({ particleCount: 220, spread: 150, origin: { y: 0.50 } }), 1700);
+    }
+
+    function celebrateYesUltimate() {
+        openJailDoorMiddle();
+        document.body.classList.add("yesUltimate");
+        document.getElementById("celebrate").classList.add("show");
+        buildFlowers();
+        fireworksConfetti(5200);
+
+        // Update the card text instead of popup
+        emoji.textContent = "🌈💐";
+        question.innerHTML = "YAAY 💕<br>I can't wait for Valentine’s Day with you";
+        hint.textContent = "";
+        subline.textContent = "";
+    }
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function spawnParticle(char, x, y, cls) {
+    const el = document.createElement("div");
+    el.className = `fxParticle ${cls}`;
+    el.textContent = char;
+    el.style.left = x + "px";
+    el.style.top  = y + "px";
+    el.style.fontSize = rand(26, 58) + "px";
+    document.body.appendChild(el);
+
+    // cleanup after animation
+    const life = cls === "smoke" ? 2300 : 1700;
+    setTimeout(() => el.remove(), life);
+    }
+
+    function startScreenExplosion(originX, originY, durationMs = 3000) {
+    // Local big boom right on the NO button
+    spawnParticle("💥", originX, originY, "boom");
+    spawnParticle("✨", originX + rand(-30, 30), originY + rand(-30, 30), "spark");
+    spawnParticle("💨", originX + rand(-40, 40), originY + rand(-40, 40), "smoke");
+
+    // Full-screen chaos for durationMs
+    const endAt = Date.now() + durationMs;
+
+    const timer = setInterval(() => {
+        if (Date.now() > endAt) {
+        clearInterval(timer);
+        return;
+        }
+
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        // random scatter, but slightly biased around the origin
+        const bias = 0.35; // 0=uniform, 1=all near origin
+        const x = rand(0, w) * (1 - bias) + originX * bias;
+        const y = rand(0, h) * (1 - bias) + originY * bias;
+
+        // mix of spark + smoke + occasional boom
+        const r = Math.random();
+        if (r < 0.65) spawnParticle("✨", x, y, "spark");
+        else if (r < 0.92) spawnParticle("💨", x, y, "smoke");
+        else spawnParticle("💥", x, y, "boom");
+    }, 70); // density: lower = more intense
+    }
+
+
+    function poofExplosionGlitch() {
+    stage = 4;
+
+    noBtn.animate(
+        [{ transform: noBtn.style.transform || "scale(1)" }, { transform: "scale(1.12)" }],
+        { duration: 180, easing: "ease-out" }
+    ).onfinish = () => {
+
+        // get NO button center (viewport coords)
+        const r = noBtn.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+
+        // hide NO and run full-screen explosion for 3 seconds
+        noBtn.style.opacity = "0";
+        startScreenExplosion(cx, cy, 3000);
+
+        // AFTER 3 seconds, start glitch + message
+        setTimeout(() => {
+        card.classList.add("glitch");
+        emoji.textContent = "⚠️🖤";
+        question.innerHTML = "Reality recalibrating…";
+        hint.textContent = "";
+        subline.textContent = "";
+        }, 2600);
+
+        // then keep glitch visible for a bit, then reboot
+        setTimeout(() => {
+        card.classList.remove("glitch");
+        noBtn.style.opacity = "1";
+        resetToFirstScreen(true);
+        }, 6000); // 3s explosion + 2.2s glitch
+    };
+    }
+
+    function resetToFirstScreen(afterReboot = false) {
+    card.classList.add("fadeOut");
+    setTimeout(() => {
+        // (your existing reset code stays the same, paste it here)
+        document.body.classList.remove("redMode");
+        candles.innerHTML = "";
+        bigHeart.className = "bigHeart";
+        yesWall.classList.remove("show");
+        bars.classList.remove("show");
+        sentence.classList.remove("show");
+        w.forEach(s => s.classList.remove("on"));
+
+        emoji.textContent = "🐱❤️";
+        question.innerHTML = "Baby,<br>will you be my Valentine?";
+        hint.textContent = "Some love stories don’t allow “no” ✨";
+        subline.textContent = afterReboot ? "…we can do this the easy way 😌" : "";
+
+        noBtn.style.display = "inline-block";
+        noBtn.style.opacity = "1";
+        setScales(1, 1);
+
+        stage = afterReboot ? 5 : 0;
+        scaleNoClicks = 0;
+
+        card.classList.remove("fadeOut");
+        card.classList.add("fadeIn");
+        setTimeout(() => card.classList.remove("fadeIn"), 750);
+    }, 720);
+    }
+    function openJailDoorMiddle() {
+    // change sentence ONLY now
+    w.forEach(s => s.classList.remove("on"));
+    sentence.innerHTML = `<span class="on">you</span> <span class="on">better</span> <span class="on">not</span> <span class="on">run</span> <span class="on">away</span>`;
+
+    // open only the middle bars
+    const barEls = bars.querySelectorAll(".barV");
+    const cols = barEls.length;
+    const mid = Math.floor(cols / 2);
+
+    // remove a “door-width” chunk in the center
+    const doorHalfWidth = 2; // door width = 2*2+1 = 5 bars (tweak this)
+
+    barEls.forEach((b) => {
+        const idx = parseInt(b.dataset.idx || "0", 10);
+        if (Math.abs(idx - mid) <= doorHalfWidth) {
+        b.classList.add("open");
+        }
+    });
+    }
+
+    function enterRedRomantic() {
+    stage = 6;
+
+    card.classList.add("fadeOut");
+    setTimeout(() => {
+        document.body.classList.add("redMode");
+        intensifyHearts(true);
+        makeCandles();
+
+        emoji.textContent = "🕯️❤️";
+
+        // smooth type-in feel (simple)
+        question.innerHTML = "Okay…";
+        hint.textContent = "";
+        subline.textContent = "";
+
+        card.classList.remove("fadeOut");
+        card.classList.add("fadeIn");
+        setTimeout(() => card.classList.remove("fadeIn"), 750);
+
+        setTimeout(() => {
+        question.innerHTML = "Okay…<br>can I at least take you out?";
+        hint.textContent = "Just one date. I’ll behave 😌";
+        }, 650);
+
+    }, 720);
+    }
+
+
+    function enterPleaseSpam() {
+      stage = 7;
+      emoji.textContent = "🥺🙏";
+      question.innerHTML = "Please Please Please Please Please";
+      hint.textContent = "I’m literally begging at this point.";
+      subline.textContent = "";
+    }
+
+    function showCrackingHeart() {
+      stage = 8;
+      bigHeart.classList.add("show");
+      bigHeart.textContent = "❤️";
+      setTimeout(() => {
+        bigHeart.textContent = "💔";
+        bigHeart.classList.add("crack");
+      }, 250);
+      setTimeout(() => {
+        bigHeart.className = "bigHeart"; // hide
+      }, 1400);
+    }
+
+    function dropJailBars() {
+      stage = 9;
+
+      // bars
+      bars.innerHTML = "";
+      bars.classList.add("show");
+
+      const cols = 10;
+      for (let i = 0; i < cols; i++) {
+        const b = document.createElement("div");
+        b.className = "barV";
+        b.dataset.idx = i;
+        b.style.left = `${(i / cols) * 100}%`;
+        b.style.animationDelay = `${i * 35}ms`;
+        bars.appendChild(b);
+      }
+
+      // sentence highlight
+      sentence.classList.add("show");
+      const words = w;
+      words.forEach(s => s.classList.remove("on"));
+      let idx = 0;
+      const t = setInterval(() => {
+        if (idx > 0) words[idx - 1].classList.remove("on");
+        if (idx < words.length) {
+          words[idx].classList.add("on");
+          idx++;
+        } else {
+          clearInterval(t);
+          setTimeout(() => {
+            // lock-in
+            words.forEach(s => s.classList.add("on"));
+            showYesWall();
+          }, 450);
+        }
+      }, 420);
+    }
+
+    function showYesWall() {
+      stage = 10;
+      noBtn.style.display = "none";
+      yesWall.classList.add("show");
+      // make YES visually dominant
+      yesBtn.style.transform = "scale(1.35)";
+      yesBtn.textContent = "YES 💖";
+      hint.textContent = "";
+      subline.textContent = "";
+    }
+
+    // ===== Hearts system =====
+    let heartsTimer = null;
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = Math.random() > 0.5 ? "❤️" : "💗";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 28 + 14 + "px";
+      heart.style.animationDuration = Math.random() * 3 + 3.4 + "s";
+      heart.style.opacity = Math.random() * 0.6 + 0.25;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+    function intensifyHearts(on) {
+      if (heartsTimer) clearInterval(heartsTimer);
+      heartsTimer = setInterval(createHeart, on ? 140 : 380);
+    }
+    intensifyHearts(false);
+
+    function makeCandles() {
+      candles.innerHTML = "";
+      const positions = [8, 16, 24, 76, 84, 92];
+      positions.forEach((x, i) => {
+        const c = document.createElement("div");
+        c.className = "candle";
+        c.style.left = `calc(${x}% - 9px)`;
+        c.style.height = (110 + (i % 3) * 18) + "px";
+        const f = document.createElement("div");
+        f.className = "flame";
+        c.appendChild(f);
+        candles.appendChild(c);
+      });
+    }
+
+    // ===== Button handlers =====
+    noBtn.addEventListener("mouseenter", playHover);
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      withLock(() => {
+      // Stage 0: first time NO clicked => wrong answer
+      if (stage === 0) {
+        systemPopup(`<b>Wrong answer.</b><br>Try again 😌`, 1600);
+        stage = 1;
+        return;
+      }
+
+      // Stage 1: second NO => loader + error 777
+      if (stage === 1) {
+        loaderThenError777();
+        stage = 1.5; // temp lock
+        return;
+      }
+
+      // After error 777: go into scaling phase on next NO click
+      if (stage === 2) {
+        startScalingPhase();
+        return;
+      }
+
+      // Scaling phase: 1-3 messages + scaling, then 4th triggers poof+glitch+reboot
+      if (stage === 3) {
+        scaleNoClicks++;
+        scalingMessage(scaleNoClicks);
+
+        // shrink NO, grow YES
+        const noScale = Math.max(0.25, 1 - scaleNoClicks * 0.22);
+        const yesScale = Math.min(2.2, 1 + scaleNoClicks * 0.22);
+        setScales(noScale, yesScale);
+
+        if (scaleNoClicks === 4) {
+          poofExplosionGlitch();
+        }
+        return;
+      }
+
+      // After reboot: first NO triggers red romantic mode
+      if (stage === 5) {
+        enterRedRomantic();
+        return;
+      }
+
+      // Red romantic: next NO => please spam
+      if (stage === 6) {
+        enterPleaseSpam();
+        return;
+      }
+
+      // Please spam: next NO => cracking heart
+      if (stage === 7) {
+        showCrackingHeart();
+        return;
+      }
+
+      // After crack: next NO => jail bars + no choice + yes wall
+      if (stage === 8) {
+        dropJailBars();
+        return;
+      }}, 650);
+      // In jail/yes-wall: ignore
+    });
+
+    yesBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // If NO still exists (until jail): show cute popup + confetti
+    // Your jail starts at stage 9 and YES wall is stage 10.
+    if (stage < 9) {
+        playYes();
+
+        if (typeof confetti === "function") {
+        confetti({ particleCount: 220, spread: 120, origin: { y: 0.65 } });
+        }
+
+        yesPopup(
+        `Of course I know that baby 😌<br><b>But you can still check out what happens if you say no</b>`,
+        3500
+        );
+
+        return;
+    }
+
+    // When YES is the only button (after jail / yes wall): full celebration + change card text
+    if (stage >= 10 || noBtn.style.display === "none") {
+        playYes();
+        celebrateYesUltimate();
+        return;
+    }
+
+    // If somehow clicked during bars-drop moment
+    playYes();
+    });
+
+  </script>
+  <div class="celebrate" id="celebrate">
+    <div class="sun"></div>
+    <div class="rainbow"></div>
+    <div class="flowers" id="flowers"></div>
+  </div>
+</body>
+</html>
